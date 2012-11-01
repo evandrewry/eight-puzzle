@@ -1,11 +1,10 @@
-#COMS W4701 - Artificial Intelligence
-#Programming Assignment #2 - Puzzle
-#Evan Drewry - ewd2106
+Programming Assignment #2 - Puzzle
 =====================================
-=====================================
+COMS W4701 - Artificial Intelligence
+Evan Drewry - ewd2106
 
-#Assignment
-===========
+Assignment
+======================================================================
 Using the general search and graph search code as presented in class,
 implement an appropriate enqueuing function for the A\* algorithm. 
 Make use of and implement any enhancements you may need for the node
@@ -30,4 +29,6 @@ function that dominates Manhattan distance; run it on the same
 random states and compare the results.
 
 #Implementation
+======================================================================
+
 

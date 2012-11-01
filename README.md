@@ -3,6 +3,7 @@
 #Evan Drewry - ewd2106
 
 #Assignment
+===========
 Using the general search and graph search code as presented in class,
 implement an appropriate enqueuing function for the A* algorithm. 
 Make use of and implement any enhancements you may need for the node
@@ -15,7 +16,7 @@ Implement both heuristic functions shown in class (i.e. misplaced
 tiles and Manhattan distance).
 
 Instrument the A* code to accumulate into a global variable
-*nodes-expanded* the total number of nodes expanded.
+**nodes-expanded** the total number of nodes expanded.
 
 Implement code to generate random solvable initial states.
 
@@ -25,3 +26,6 @@ and compare the results.
 Extra Credit (3 points): Develop another consistent heuristic
 function that dominates Manhattan distance; run it on the same
 random states and compare the results.
+
+#Implementation
+

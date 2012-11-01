@@ -1,5 +1,5 @@
 Programming Assignment #2 - Puzzle
-=====================================
+======================================================================
 Due 7 Nov 2012
 
 COMS W4701 - Artificial Intelligence
@@ -36,5 +36,22 @@ random states and compare the results.
 
 #Implementation
 ======================================================================
+My implementation of A\* search is an extension of the general search
+code covered in class. The `(a-star-search initial-state goalp samep
+heuristic)` function calls general search with a priority queue for
+the fringe with key
+```lisp
+(lambda (node)                                                
+  (+ (funcall heuristic node)                                 
+     (node-path-cost node)))
+```
+which is the `f(n) = g(n) + h(n)` function associated with A\* search.
 
-
+To see a trial run of the A\* search (using both heuristics, with five
+trials each) load the eight-puzzle.lisp file and enter
+```lisp
+(run-tests)
+```
+into the REPL. When each trial runs, it will print the resulting value
+of \*nodes-expanded\* along with some informative text about which
+trial and heuristic was just run.

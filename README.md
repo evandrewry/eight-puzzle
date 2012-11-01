@@ -49,9 +49,7 @@ which is the `f(n) = g(n) + h(n)` function associated with A\* search.
 
 To see a trial run of the A\* search (using both heuristics, with five
 trials each) load the eight-puzzle.lisp file and enter
-```lisp
-(run-tests)
-```
+`(run-tests)`
 into the REPL. When each trial runs, it will print the resulting value
 of \*nodes-expanded\* along with some informative text about which
 trial and heuristic was just run.

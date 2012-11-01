@@ -21,7 +21,7 @@ Implement both heuristic functions shown in class (i.e. misplaced
 tiles and Manhattan distance).
 
 Instrument the A\* code to accumulate into a global variable
-\*nodes-expanded\* the total number of nodes expanded.
+`*nodes-expanded*` the total number of nodes expanded.
 
 Implement code to generate random solvable initial states.
 
@@ -56,11 +56,11 @@ into the REPL. When each trial runs, it will print the resulting value
 of \*nodes-expanded\* along with some informative text about which
 trial and heuristic was just run.
 
-The goal state is defined in \*goal\* as a simple lisp list of the
+The goal state is defined in `*goal*` as a simple lisp list of the
 digits 0-9, where 0 represents the blank square. By default, this is
 defined to be `'(0 1 2 3 4 5 6 7 8 9)` but can be redifined as you
 please. The `goalp` function simply calls the `samep` function on the
-input state and the \*goal\* variable.
+input state and the `*goal*` variable.
 
 The actual puzzle search functions are implemented as `(manhattan-
 distance-search initial-state)` and `(misplaced-tiles-search 

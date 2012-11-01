@@ -1,5 +1,11 @@
-(provide "heap")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; COMS W4701 Assignment #2: EIGHT-PUZZLE
+;;; Evan Drewry - ewd2106 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; HEAP CODE FOR PRIORITY QUEUE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun heap-val (heap i key) (funcall key (elt heap i)))
 (defun heap-parent (i) (floor (1- i) 2))
 (defun heap-left (i) (+ 1 i i))
@@ -56,9 +62,9 @@
   (make-array size :fill-pointer 0 :adjustable t))
 
 
-(provide "queue")
-(require "heap" "heap.lisp")
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; QUEUE CODE FOR SEARCH ALGORITHMS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defstruct q
   (enqueue #'enqueue-FIFO)
   (key #'identity)
@@ -109,9 +115,9 @@
 
 
 
-(provide "search")
-(require "queue" "queue.lisp")
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; GENERAL SEARCH CODE & ALGORITHMS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *nodes-expanded* 0)
 
 (defstruct node 
@@ -128,6 +134,8 @@
     actions))
 
 (defun expand (successor node)
+  "Increments *nodes-expanded* and expands the node using the
+   successor function."
   (incf *nodes-expanded*)
   (let ((triples (funcall successor (node-state node))))
     (mapcar (lambda (action-state-cost)
@@ -145,6 +153,7 @@
     ))
 
 (defun tree-search (fringe successor goalp)
+  "General tree search."
   (unless (q-emptyp fringe)
     (let ((node (q-remove fringe)))
       (if (funcall goalp (node-state node))
@@ -154,6 +163,7 @@
       )))
 
 (defun graph-search (fringe closed successor goalp samep)
+  "General tree search."
   (unless (q-emptyp fringe)
     (let ((node (q-remove fringe)))
       (cond ((funcall goalp (node-state node))
@@ -173,12 +183,14 @@
                        &key (samep #'eql)
                             (enqueue #'enqueue-LIFO)
                             (key #'identity))
+  "General search."
   (setf *nodes-expanded* 0)    
   (let ((fringe (make-q :enqueue enqueue :key key)))
     (q-insert fringe (list (make-node :state initial-state)))
     (graph-search fringe nil successor goalp samep)))
 
 (defun a-star-search (initial-state successor goalp samep heuristic)
+  "General A* search."
   (general-search initial-state successor goalp
                   :samep samep
                   :enqueue #'enqueue-priority
@@ -187,15 +199,20 @@
                             (node-path-cost node)))))
 
 
-(provide "puzzle")
-(require "search" "search.lisp")
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; EIGHT-PUZZLE CODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar *goal* '(0 1 2 3 4 5 6 7 8))
 
 (defun eight-puzzle-samep (a b)
+  "samep function for puzzle state"
   (equal a b))
 
 (defun eight-puzzle-goalp (puzzle)
+  "goalp function for puzzle state"
   (eight-puzzle-samep puzzle *goal*))
 
 (defun swap-tiles (puzzle i j)
@@ -209,6 +226,7 @@
   (position 0 puzzle))
 
 (defun on-top-edge-p (puzzle)
+  "Checks if blank spot is on the top edge"
   (let ((pos (zero-index puzzle)))  
     (or (= 0 pos)
         (= 1 pos)
@@ -229,6 +247,7 @@
       (list (list 'move 'up) state 1))))
 
 (defun on-right-edge-p (puzzle)
+  "Checks if blank spot is on the right edge"
   (let ((pos (zero-index puzzle)))  
     (or (= 2 pos)
         (= 5 pos)
@@ -249,6 +268,7 @@
       (list (list 'move 'right) state 1))))
 
 (defun on-left-edge-p (puzzle)
+  "Checks if blank spot is on the left edge"
   (let ((pos (zero-index puzzle)))  
     (or (= 0 pos)
         (= 3 pos)
@@ -269,6 +289,7 @@
       (list (list 'move 'left) state 1))))
 
 (defun on-bottom-edge-p (puzzle)
+  "Checks if blank spot is on the bottom edge"
   (let ((pos (zero-index puzzle)))  
     (or (= 6 pos)
         (= 7 pos)
@@ -296,9 +317,12 @@
                     (move-down-triple puzzle))))
 
 (defun random-element (list)
+  "Picks a random element from the input list."
   (nth (random (length list)) list))
 
 (defun generate-puzzle-inner (puzzle max-depth)
+  "Generates a random initial state by starting at the goal and
+   working backwards"
   (if (= max-depth 0)
     puzzle
     (generate-puzzle-inner
@@ -309,9 +333,12 @@
       (1- max-depth))))
 
 (defun generate-puzzle ()
+  "Generates a random initial state by starting at the goal and
+   working backwards"
   (generate-puzzle-inner *goal* 100))
 
 (defun puzzle-search (puzzle heuristic)
+  "General A* puzzle solver; requires heuristic function to be passed in."
   (a-star-search puzzle
                   #'eight-puzzle-successor
                   #'eight-puzzle-goalp
@@ -319,32 +346,43 @@
                   heuristic))
 
 (defun misplaced-tiles-heuristic (node)
+  "Implentation of misplaced tiles heuristic."
   (let ((state (node-state node)))
     (loop for i from 0 to 8
           count (funcall (complement #'=) (elt state i) (elt *goal* i)))))
 
 (defun misplaced-tiles-search (puzzle)
+  "A* search for puzzle goal from input puzzle using the
+   misplaced tiles heuristic."
   (puzzle-search puzzle #'misplaced-tiles-heuristic))
 
 (defun xcoord (index)
+  "x-coordinate of the index on the 3x3 board."
   (mod index 3))
 
 (defun ycoord (index)
+  "y-coordinate of the index on the 3x3 board."
   (/ index 3))
 
 (defun manhattan-distance (a b)
+  "Computes manhattan distance between index a and index b in the 
+   list used for the state representation."
   (+ (abs (- (xcoord a) (xcoord b)))
      (abs (- (ycoord a) (ycoord b)))))
 
 (defun manhattan-distance-heuristic (node)
+  "Implentation of manhattan distance heuristic."
   (let ((state (node-state node)))
     (loop for i from 0 to 8
           sum (manhattan-distance (elt state i) (elt *goal* i)))))
 
 (defun manhattan-distance-search (puzzle)
+  "A* search for puzzle goal from input puzzle using the
+   manhattan distance heuristic."
   (puzzle-search puzzle #'manhattan-distance-heuristic))
 
 (defun run-tests ()
+  "Runs 5 trials of each search and prints out results"
   (loop for i from 1 to 5
         do (let ((p (generate-puzzle)))
              (format t "Trial #~D~%" i)

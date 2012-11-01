@@ -1,7 +1,11 @@
 Programming Assignment #2 - Puzzle
 =====================================
+Due 7 Nov 2012
+
 COMS W4701 - Artificial Intelligence
+
 Evan Drewry - ewd2106
+
 
 Assignment
 ======================================================================
@@ -27,6 +31,8 @@ and compare the results.
 Extra Credit (3 points): Develop another consistent heuristic
 function that dominates Manhattan distance; run it on the same
 random states and compare the results.
+
+
 
 #Implementation
 ======================================================================

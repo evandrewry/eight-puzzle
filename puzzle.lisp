@@ -155,3 +155,11 @@
 (defun manhattan-distance-search (puzzle)
   (puzzle-search puzzle #'manhattan-distance-heuristic))
 
+(defun run-tests ()
+  (loop for i from 1 to 5
+        do (let ((p (generate-puzzle)))
+             (format t "Trial #~D~%" i)
+             (misplaced-tiles-search p)
+             (format t "  Misplaced tiles: ~D~%" *nodes-expanded*)
+             (manhattan-distance-search p)
+             (format t "  Manhattan distance: ~D~%" *nodes-expanded*))))

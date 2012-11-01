@@ -5,7 +5,7 @@
 #Assignment
 ===========
 Using the general search and graph search code as presented in class,
-implement an appropriate enqueuing function for the A* algorithm. 
+implement an appropriate enqueuing function for the A\* algorithm. 
 Make use of and implement any enhancements you may need for the node
 structures.
 
@@ -15,8 +15,8 @@ successor function, same state test, and goal test) for the 8-puzzle.
 Implement both heuristic functions shown in class (i.e. misplaced
 tiles and Manhattan distance).
 
-Instrument the A* code to accumulate into a global variable
-**nodes-expanded** the total number of nodes expanded.
+Instrument the A\* code to accumulate into a global variable
+\*nodes-expanded\* the total number of nodes expanded.
 
 Implement code to generate random solvable initial states.
 

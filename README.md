@@ -6,6 +6,11 @@ COMS W4701 - Artificial Intelligence
 
 Evan Drewry - ewd2106
 
+NOTE: I finished the assignment before the email about standardizing
+the format, but have implemented wrapper functions that allow my
+implementation to conform to the given spec, resulting in a few
+repetitive/weird functions.
+
 
 Assignment
 ======================================================================

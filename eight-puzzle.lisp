@@ -139,7 +139,7 @@
   (incf *nodes-expanded*)
   (let ((triples (funcall successor (node-state node))))
     (mapcar (lambda (action-state-cost)
-              (let ((action (car action-state-cost))
+             (let ((action (car action-state-cost))
                     (state (cadr action-state-cost))
                     (cost (caddr action-state-cost)))
                 (make-node :state state
@@ -187,7 +187,8 @@
   (setf *nodes-expanded* 0)    
   (let ((fringe (make-q :enqueue enqueue :key key)))
     (q-insert fringe (list (make-node :state initial-state)))
-    (graph-search fringe nil successor goalp samep)))
+    (let ((result (graph-search fringe nil successor goalp samep)))
+      (list result (length result) *nodes-expanded*))))
 
 (defun a-star-search (initial-state successor goalp samep heuristic)
   "General A* search."
@@ -244,7 +245,7 @@
   for moving our blank space 1 spot up"
   (let ((state (move-up-state puzzle)))
     (unless (null state)
-      (list (list 'move 'up) state 1))))
+      (list "up" state 1))))
 
 (defun on-right-edge-p (puzzle)
   "Checks if blank spot is on the right edge"
@@ -265,7 +266,7 @@
   for moving our blank space 1 spot to the right"
   (let ((state (move-right-state puzzle)))
     (unless (null state)
-      (list (list 'move 'right) state 1))))
+      (list "right" state 1))))
 
 (defun on-left-edge-p (puzzle)
   "Checks if blank spot is on the left edge"
@@ -286,7 +287,7 @@
   for moving our blank space 1 spot to the left"
   (let ((state (move-left-state puzzle)))
     (unless (null state)
-      (list (list 'move 'left) state 1))))
+      (list "left" state 1))))
 
 (defun on-bottom-edge-p (puzzle)
   "Checks if blank spot is on the bottom edge"
@@ -307,7 +308,7 @@
   for moving our blank space 1 spot down"
   (let ((state (move-down-state puzzle)))
     (unless (null state)
-      (list (list 'move 'down) state 1))))
+      (list "down" state 1))))
 
 (defun eight-puzzle-successor (puzzle)
   "Returns action-state-cost triples for eight-puzzle"
@@ -335,9 +336,17 @@
 (defun generate-puzzle ()
   "Generates a random initial state by starting at the goal and
    working backwards"
-  (generate-puzzle-inner *goal* 100))
+  (generate-puzzle-inner *goal* 1000))
 
-(defun puzzle-search (puzzle heuristic)
+(defun random-case ()
+  "conforming to hw2 spec; generates list of 5 random start states"
+  (list (generate-puzzle)
+        (generate-puzzle)
+        (generate-puzzle)
+        (generate-puzzle)
+        (generate-puzzle)))
+
+(defun 8-puzzle (puzzle heuristic)
   "General A* puzzle solver; requires heuristic function to be passed in."
   (a-star-search puzzle
                   #'eight-puzzle-successor
@@ -351,10 +360,14 @@
     (loop for i from 0 to 8
           count (funcall (complement #'=) (elt state i) (elt *goal* i)))))
 
+(defun misplaced (node)
+  "conforming to hw2 spec"
+  (misplaced-tiles-heuristic node))
+
 (defun misplaced-tiles-search (puzzle)
   "A* search for puzzle goal from input puzzle using the
    misplaced tiles heuristic."
-  (puzzle-search puzzle #'misplaced-tiles-heuristic))
+  (8-puzzle puzzle #'misplaced-tiles-heuristic))
 
 (defun xcoord (index)
   "x-coordinate of the index on the 3x3 board."
@@ -376,17 +389,23 @@
     (loop for i from 0 to 8
           sum (manhattan-distance (elt state i) (elt *goal* i)))))
 
+(defun manhattan (node)
+  "conforming to hw2 spec"
+  (manhattan-distance-heuristic node))
+
 (defun manhattan-distance-search (puzzle)
   "A* search for puzzle goal from input puzzle using the
    manhattan distance heuristic."
-  (puzzle-search puzzle #'manhattan-distance-heuristic))
+  (8-puzzle puzzle #'manhattan-distance-heuristic))
 
 (defun run-tests ()
   "Runs 5 trials of each search and prints out results"
   (loop for i from 1 to 5
         do (let ((p (generate-puzzle)))
              (format t "Trial #~D~%" i)
-             (misplaced-tiles-search p)
-             (format t "  Misplaced tiles: ~D~%" *nodes-expanded*)
-             (manhattan-distance-search p)
-             (format t "  Manhattan distance: ~D~%" *nodes-expanded*))))
+             (let ((results (misplaced-tiles-search p)))
+               (format t " Misplaced tiles: ~D nodes expanded~%  ~a~%"
+                       *nodes-expanded* results))
+             (let ((results (manhattan-distance-search p)))
+               (format t " Manhattan distance: ~D nodes expanded~%  ~a~%"
+                       *nodes-expanded* results)))))
